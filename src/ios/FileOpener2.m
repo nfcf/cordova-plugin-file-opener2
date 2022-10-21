@@ -30,10 +30,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 @synthesize controller = docController;
 
 CDVPluginResult* pluginResult = nil;
-NSString* callbackId = nil;
+NSString* _callbackId = nil; // changing this due to conflict with cordova-plugin-native-keyboard: ld: 1 duplicate symbol for architecture x86_64
 
 - (void) open: (CDVInvokedUrlCommand*)command {
-	callbackId = command.callbackId;
+	_callbackId = command.callbackId;
 	NSString *path = [command.arguments objectAtIndex:0];
 	NSString *contentType = [command.arguments objectAtIndex:1];
 	BOOL showPreview = YES;
@@ -118,7 +118,7 @@ NSString* callbackId = nil;
 				nil
 			];
 			pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:jsonObj];
-        	[self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+        	[self.commandDelegate sendPluginResult:pluginResult callbackId:_callbackId];
 		}
 	});
 }
@@ -127,11 +127,11 @@ NSString* callbackId = nil;
 
 @implementation FileOpener2 (UIDocumentInteractionControllerDelegate)
 - (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller {
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:_callbackId];
 }
 
 - (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller {
-	[self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+	[self.commandDelegate sendPluginResult:pluginResult callbackId:_callbackId];
 }
 
 - (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller {
